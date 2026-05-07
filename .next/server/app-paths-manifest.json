@@ -1,0 +1,11 @@
+{
+  "/page": "app/page.js",
+  "/team/page": "app/team/page.js",
+  "/login/page": "app/login/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/api/dashboard/route": "app/api/dashboard/route.js",
+  "/api/team/route": "app/api/team/route.js",
+  "/api/projects/[id]/route": "app/api/projects/[id]/route.js",
+  "/api/projects/route": "app/api/projects/route.js",
+  "/projects/[id]/page": "app/projects/[id]/page.js"
+}

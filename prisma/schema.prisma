@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  role          String    @default("MEMBER") // ADMIN or MEMBER
+  projects      Project[] @relation("ProjectOwner")
+  tasks         Task[]    @relation("TaskAssignee")
+  teamMemberships TeamMember[]
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Project {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  status      String       @default("ACTIVE") // ACTIVE, ON_HOLD, COMPLETED
+  ownerId     String
+  owner       User         @relation("ProjectOwner", fields: [ownerId], references: [id])
+  members     TeamMember[]
+  tasks       Task[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  status      String   @default("TODO") // TODO, IN_PROGRESS, COMPLETED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH
+  dueDate     DateTime?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id])
+  assigneeId  String?
+  assignee    User?    @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+  role      String   @default("MEMBER")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+}
